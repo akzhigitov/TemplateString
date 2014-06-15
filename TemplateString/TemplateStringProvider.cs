@@ -7,14 +7,11 @@ namespace TemplateString
 {
     public class TemplateStringProvider
     {
-        public const char OpenBracket = '<';
-
-        public const char ClosedBracket = '>';
-
-        public Dictionary<string, string> Provide(string templateString, string valueString)
+        public Dictionary<string, string> Provide(
+            IList<string> templates, 
+            string templateString, 
+            string valueString)
         {
-            var templates = GetTemplates(templateString).ToList();
-
             var templateSeparators = GetTemplateSeparators(templateString, valueString, templates).ToList();
 
             var split = GetTemplatesValues(templateString, valueString, templateSeparators, templates.Count);
@@ -23,7 +20,7 @@ namespace TemplateString
 
             for (int i = 0; i < split.Count(); i++)
             {
-                dictionary.Add(templates[i].Trim(new[] { OpenBracket, ClosedBracket }), split[i]);
+                dictionary.Add(templates[i], split[i]);
             }
 
             return dictionary;
@@ -67,19 +64,6 @@ namespace TemplateString
             }
 
             return strings;
-        }
-
-        private static IEnumerable<string> GetTemplates(string templateString)
-        {
-            var regex = new Regex(
-                string.Format(
-                    @"{0}(.*?){1}",
-                    Regex.Escape(
-                        OpenBracket.ToString()),
-                    Regex.Escape(
-                        ClosedBracket.ToString())));
-
-            return from Match m in regex.Matches(templateString) select m.Value;
         }
     }
 }

@@ -10,12 +10,17 @@ namespace TemplateString.Tests
         [Test]
         public void TemplateWithSingleCharSeparatorTest()
         {
-            string templateString = "<name>_<code>_<number>";
+            string templateString = "name_code_number";
             string fileName = "File_20_2014";
+
+            IList<string> names = new[]
+            {
+                "name", "code", "number"
+            };
 
             var templateStringProvider = new TemplateStringProvider();
 
-            var dictionary = templateStringProvider.Provide(templateString, fileName);
+            var dictionary = templateStringProvider.Provide(names, templateString, fileName);
 
             Assert.AreEqual(3, dictionary.Count);
 
@@ -27,36 +32,51 @@ namespace TemplateString.Tests
         [Test]
         public void TemplateWithoutSeparatorTest()
         {
-            string templateString = "<name><code><number>";
+            string templateString = "namecodenumber";
             string fileName = "File_20_2014";
+
+            IList<string> names = new[]
+            {
+                "name", "code", "number"
+            };
 
             var templateStringProvider = new TemplateStringProvider();
 
             Assert.Throws<ArgumentException>(
-                () => templateStringProvider.Provide(templateString, fileName));
+                () => templateStringProvider.Provide(names, templateString, fileName));
         }
 
         [Test]
         public void TemplateDoesntMatchNameTest()
         {
-            string templateString = "<name>.<code>,<number>";
+            string templateString = "name.code,number";
             string fileName = "File,20.2014";
+
+            IList<string> names = new[]
+            {
+                "name", "code", "number"
+            };
 
             var templateStringProvider = new TemplateStringProvider();
 
             Assert.Throws<ArgumentException>(
-                () => templateStringProvider.Provide(templateString, fileName));
+                () => templateStringProvider.Provide(names, templateString, fileName));
         }
 
         [Test]
         public void TemplateWithOneValueTest()
         {
-            string templateString = "<name>";
+            string templateString = "name";
             string fileName = "File";
+
+            IList<string> names = new[]
+            {
+                "name", 
+            };
 
             var templateStringProvider = new TemplateStringProvider();
 
-            var dictionary = templateStringProvider.Provide(templateString, fileName);
+            var dictionary = templateStringProvider.Provide(names, templateString, fileName);
 
             DictionaryAssert(dictionary, "name", "File");
         }
@@ -64,12 +84,17 @@ namespace TemplateString.Tests
         [Test]
         public void TemplateWithMultipleCharSeparatorTest()
         {
-            string templateString = "<name>_____<code>,<number>";
+            string templateString = "name_____code,number";
             string fileName = "File_____20,2014";
+
+            IList<string> names = new[]
+            {
+                "name", "code", "number"
+            };
 
             var templateStringProvider = new TemplateStringProvider();
 
-            var dictionary = templateStringProvider.Provide(templateString, fileName);
+            var dictionary = templateStringProvider.Provide(names, templateString, fileName);
 
             Assert.AreEqual(3, dictionary.Count);
 
